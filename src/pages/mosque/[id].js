@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getMosqueById, getTimetable, followMosque, unfollowMosque, getUserProfile, subscribeToAnnouncements } from '@/services/db';
 import { useAuth } from '@/context/AuthContext';
 import { format, addDays, subDays, isSameMonth, isSameDay } from 'date-fns';
-import { Bell, BellOff, Share2, MapPin, ExternalLink, Facebook, Instagram, Twitter, Youtube, Clock, Calendar, Globe, Settings } from 'lucide-react';
+import { Bell, BellOff, Share2, MapPin, ExternalLink, Facebook, Instagram, Twitter, Youtube, Clock, Calendar, Globe, Settings, Copy, Navigation } from 'lucide-react';
 
 const SkeletonLoader = () => (
     <div className="animate-pulse">
@@ -154,6 +154,11 @@ export default function MosqueProfile() {
         window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
     };
 
+    const handleCopyAddress = () => {
+        navigator.clipboard.writeText(mosque.address);
+        alert('Address copied to clipboard!');
+    };
+
     const formatTime = (timeStr) => {
         if (!timeStr) return '';
         // Assuming timeStr is "HH:mm" or "HH:mm AM/PM"
@@ -202,90 +207,181 @@ export default function MosqueProfile() {
                     <div className="profile-grid">
                         {/* Sidebar */}
                         <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                            <div className="glass-card">
-                                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                                    {isAdmin && (
-                                        <button
-                                            onClick={() => router.push(`/admin/dashboard?mosqueId=${id}`)}
-                                            className="btn btn-primary"
-                                            style={{ width: '100%', marginBottom: '0.5rem', background: 'var(--emerald-800)' }}
-                                        >
-                                            <Settings size={18} style={{ marginRight: '0.5rem' }} /> Manage Mosque
-                                        </button>
-                                    )}
-                                    {isFollowing ? (
-                                        <button onClick={handleFollow} className="btn btn-secondary" style={{ flex: 1 }}>
-                                            <BellOff size={18} style={{ marginRight: '0.5rem' }} /> Unfollow
-                                        </button>
-                                    ) : (
-                                        <button onClick={handleFollow} className="btn btn-primary" style={{ flex: 1 }}>
-                                            <Bell size={18} style={{ marginRight: '0.5rem' }} /> Follow
-                                        </button>
-                                    )}
-                                    <button onClick={handleShare} className="btn btn-logout">
-                                        <Share2 size={18} />
-                                    </button>
-                                </div>
+                            <div style={{
+                                background: 'var(--white)',
+                                border: '1px solid var(--border)',
+                                borderRadius: '16px',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                                overflow: 'hidden'
+                            }}>
+                                <div style={{ padding: '1.5rem' }}>
+                                    {/* Primary Actions */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+                                        {isAdmin && (
+                                            <button
+                                                onClick={() => router.push(`/admin/dashboard?mosqueId=${id}`)}
+                                                className="btn"
+                                                style={{
+                                                    width: '100%',
+                                                    background: 'var(--emerald-50)',
+                                                    color: 'var(--emerald-800)',
+                                                    border: '1px solid var(--emerald-200)',
+                                                    borderRadius: '10px',
+                                                    padding: '0.875rem',
+                                                    fontWeight: '600',
+                                                    fontSize: '0.95rem',
+                                                    marginBottom: '0.5rem'
+                                                }}
+                                            >
+                                                <Settings size={18} style={{ marginRight: '0.5rem' }} /> Manage Mosque
+                                            </button>
+                                        )}
 
-                                <div style={{ marginBottom: '2rem' }}>
-                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <MapPin size={18} className="text-emerald-600" /> Location
-                                    </h3>
-                                    <p style={{ color: 'var(--muted-foreground)', marginBottom: '1rem', lineHeight: '1.6' }}>
-                                        {mosque.address}
-                                    </p>
-
-                                    {/* Map Embed */}
-                                    {mosque.location && (
-                                        <div style={{ borderRadius: 'var(--radius)', overflow: 'hidden', height: '200px', marginBottom: '1rem', border: '1px solid var(--border)' }}>
-                                            <iframe
-                                                width="100%"
-                                                height="100%"
-                                                frameBorder="0"
-                                                style={{ border: 0 }}
-                                                src={`https://maps.google.com/maps?q=${mosque.location.latitude},${mosque.location.longitude}&z=15&output=embed`}
-                                                allowFullScreen
-                                            ></iframe>
+                                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                            {isFollowing ? (
+                                                <button
+                                                    onClick={handleFollow}
+                                                    className="btn"
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'var(--white)',
+                                                        color: 'var(--emerald-700)',
+                                                        border: '2px solid var(--emerald-100)',
+                                                        borderRadius: '10px',
+                                                        fontWeight: '600'
+                                                    }}
+                                                >
+                                                    <BellOff size={18} style={{ marginRight: '0.5rem' }} /> Following
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={handleFollow}
+                                                    className="btn"
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'var(--emerald-600)',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '10px',
+                                                        fontWeight: '600',
+                                                        boxShadow: '0 4px 12px rgba(5, 150, 105, 0.2)'
+                                                    }}
+                                                >
+                                                    <Bell size={18} style={{ marginRight: '0.5rem' }} /> Follow
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={handleShare}
+                                                className="btn"
+                                                style={{
+                                                    padding: '0 1rem',
+                                                    background: 'var(--white)',
+                                                    border: '1px solid var(--border)',
+                                                    borderRadius: '10px',
+                                                    color: 'var(--muted-foreground)'
+                                                }}
+                                            >
+                                                <Share2 size={20} />
+                                            </button>
                                         </div>
-                                    )}
+                                    </div>
 
-                                    <button onClick={openMap} className="btn btn-logout" style={{ width: '100%', fontSize: '0.9rem' }}>
-                                        Get Directions
-                                    </button>
-                                </div>
+                                    {/* Connect Section */}
+                                    <div>
+                                        <h3 style={{
+                                            fontSize: '0.75rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '1.5px',
+                                            color: 'var(--muted-foreground)',
+                                            marginBottom: '1.25rem',
+                                            fontWeight: '700',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem'
+                                        }}>
+                                            Connect
+                                        </h3>
 
-                                <div>
-                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <Globe size={18} className="text-emerald-600" /> Connect
-                                    </h3>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                            {mosque.website && (
+                                                <a
+                                                    href={mosque.website}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn"
+                                                    style={{
+                                                        width: '100%',
+                                                        background: 'var(--background)',
+                                                        color: 'var(--foreground)',
+                                                        border: '1px solid var(--border)',
+                                                        borderRadius: '10px',
+                                                        justifyContent: 'space-between',
+                                                        padding: '0.875rem 1rem',
+                                                        fontWeight: '500',
+                                                        fontSize: '0.95rem',
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.borderColor = 'var(--emerald-400)';
+                                                        e.currentTarget.style.color = 'var(--emerald-700)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.borderColor = 'var(--border)';
+                                                        e.currentTarget.style.color = 'var(--foreground)';
+                                                    }}
+                                                >
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <Globe size={16} /> Website
+                                                    </span>
+                                                    <ExternalLink size={14} style={{ opacity: 0.5 }} />
+                                                </a>
+                                            )}
 
-                                    {mosque.website && (
-                                        <a href={mosque.website} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ width: '100%', marginBottom: '1rem' }}>
-                                            Visit Website <ExternalLink size={16} style={{ marginLeft: '0.5rem' }} />
-                                        </a>
-                                    )}
-
-                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                                        {mosque.facebook && (
-                                            <a href={mosque.facebook} target="_blank" rel="noopener noreferrer" className="icon-button">
-                                                <Facebook size={20} />
-                                            </a>
-                                        )}
-                                        {mosque.instagram && (
-                                            <a href={mosque.instagram} target="_blank" rel="noopener noreferrer" className="icon-button">
-                                                <Instagram size={20} />
-                                            </a>
-                                        )}
-                                        {mosque.twitter && (
-                                            <a href={mosque.twitter} target="_blank" rel="noopener noreferrer" className="icon-button">
-                                                <Twitter size={20} />
-                                            </a>
-                                        )}
-                                        {mosque.youtube && (
-                                            <a href={mosque.youtube} target="_blank" rel="noopener noreferrer" className="icon-button">
-                                                <Youtube size={20} />
-                                            </a>
-                                        )}
+                                            {/* Social Grid */}
+                                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                                                {[
+                                                    { icon: Facebook, link: mosque.facebook, color: '#1877F2', label: 'Facebook' },
+                                                    { icon: Instagram, link: mosque.instagram, color: '#E4405F', label: 'Instagram' },
+                                                    { icon: Twitter, link: mosque.twitter, color: '#1DA1F2', label: 'Twitter' },
+                                                    { icon: Youtube, link: mosque.youtube, color: '#FF0000', label: 'Youtube' }
+                                                ].map((social, idx) => social.link && (
+                                                    <a
+                                                        key={idx}
+                                                        href={social.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="social-btn"
+                                                        style={{
+                                                            width: '42px',
+                                                            height: '42px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            borderRadius: '50%',
+                                                            background: 'var(--background)',
+                                                            border: '1px solid var(--border)',
+                                                            color: 'var(--muted-foreground)',
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            e.currentTarget.style.color = 'white';
+                                                            e.currentTarget.style.borderColor = social.color;
+                                                            e.currentTarget.style.background = social.color;
+                                                            e.currentTarget.style.transform = 'translateY(-2px)';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.color = 'var(--muted-foreground)';
+                                                            e.currentTarget.style.borderColor = 'var(--border)';
+                                                            e.currentTarget.style.background = 'var(--background)';
+                                                            e.currentTarget.style.transform = 'translateY(0)';
+                                                        }}
+                                                        title={social.label}
+                                                    >
+                                                        <social.icon size={18} strokeWidth={2} />
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -433,6 +529,65 @@ export default function MosqueProfile() {
                                         })}
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Location Section - Modern & Interactive */}
+                            <div className="glass-card" style={{ marginTop: '2rem', padding: 0, overflow: 'hidden', position: 'relative', height: '400px', border: '1px solid var(--border)' }}>
+                                {/* Map Background */}
+                                {mosque.location && (
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        frameBorder="0"
+                                        style={{ border: 0, filter: 'grayscale(20%) contrast(1.1)' }}
+                                        src={`https://maps.google.com/maps?q=${mosque.location.latitude},${mosque.location.longitude}&z=15&output=embed`}
+                                        allowFullScreen
+                                    ></iframe>
+                                )}
+
+                                {/* Floating Overlay */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    background: 'rgba(255, 255, 255, 0.85)',
+                                    backdropFilter: 'blur(12px)',
+                                    borderTop: '1px solid rgba(255,255,255,0.5)',
+                                    padding: '1.5rem',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '1rem'
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '1rem', flexWrap: 'wrap' }}>
+                                        <div style={{ flex: 1, minWidth: '200px' }}>
+                                            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--emerald-950)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <MapPin size={20} className="text-emerald-600" /> Visit Us
+                                            </h3>
+                                            <p style={{ color: 'var(--emerald-900)', fontSize: '0.95rem', opacity: 0.8 }}>
+                                                {mosque.address}
+                                            </p>
+                                        </div>
+
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button
+                                                onClick={handleCopyAddress}
+                                                className="icon-button"
+                                                title="Copy Address"
+                                                style={{ background: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.05)', cursor: 'pointer' }}
+                                            >
+                                                <Copy size={18} color="var(--emerald-700)" />
+                                            </button>
+                                            <button
+                                                onClick={openMap}
+                                                className="btn btn-primary"
+                                                style={{ padding: '0.5rem 1.2rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)', borderRadius: '2rem' }}
+                                            >
+                                                <Navigation size={16} /> Get Directions
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
