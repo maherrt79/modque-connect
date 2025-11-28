@@ -76,6 +76,11 @@ export default function AdminDashboard() {
                         <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--emerald-800)' }}>View Public Page</h3>
                         <p style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem' }}>See how your mosque looks to visitors.</p>
                     </Link>
+
+                    <Link href={`/mosque/${selectedMosque.id}/tv`} target="_blank" className="card glass-panel hover-card" style={{ textDecoration: 'none', color: 'inherit', border: '1px solid var(--gold-200)', background: 'var(--gold-50)' }}>
+                        <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--gold-800)' }}>Launch TV Mode</h3>
+                        <p style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem' }}>Open digital signage display for large screens.</p>
+                    </Link>
                 </div>
             </div>
         );

@@ -304,24 +304,43 @@ export default function MosqueProfile() {
                                 </div>
 
                                 {todayTimes ? (
-                                    <table className="prayer-table">
-                                        <tbody>
-                                            {['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map((prayer) => {
-                                                const key = prayer.toLowerCase();
-                                                const time = todayTimes[key];
-                                                const isNext = nextPrayer?.name === prayer;
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        {/* Header */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', color: 'var(--muted-foreground)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase' }}>
+                                            <div>Prayer</div>
+                                            <div style={{ textAlign: 'center' }}>Adhan</div>
+                                            <div style={{ textAlign: 'right' }}>Iqamah</div>
+                                        </div>
 
-                                                if (!time) return null;
+                                        {/* Rows */}
+                                        {['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map((prayer) => {
+                                            const key = prayer.toLowerCase();
+                                            const time = todayTimes[key];
+                                            const iqama = (todayTimes && prayer !== 'Sunrise') ? todayTimes[key + 'Iqama'] : null;
+                                            const isNext = nextPrayer?.name === prayer;
 
-                                                return (
-                                                    <tr key={prayer} className={`prayer-row ${isNext ? 'active' : ''}`}>
-                                                        <td>{prayer}</td>
-                                                        <td>{formatTime(time)}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                            if (!time) return null;
+
+                                            return (
+                                                <div key={prayer} style={{
+                                                    display: 'grid',
+                                                    gridTemplateColumns: '1.2fr 1fr 1fr',
+                                                    padding: '1rem',
+                                                    alignItems: 'center',
+                                                    backgroundColor: isNext ? 'var(--emerald-50)' : 'transparent',
+                                                    borderLeft: isNext ? '4px solid var(--emerald-500)' : '4px solid transparent',
+                                                    fontWeight: isNext ? '600' : 'normal',
+                                                    borderBottom: '1px solid var(--border-light)'
+                                                }}>
+                                                    <div style={{ color: isNext ? 'var(--emerald-900)' : 'inherit' }}>{prayer}</div>
+                                                    <div style={{ textAlign: 'center', color: isNext ? 'var(--emerald-900)' : 'inherit' }}>{formatTime(time)}</div>
+                                                    <div style={{ textAlign: 'right', color: isNext ? 'var(--emerald-900)' : 'var(--muted-foreground)' }}>
+                                                        {iqama || (prayer === 'Sunrise' ? '☀️' : '--:--')}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 ) : (
                                     <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted-foreground)' }}>
                                         No timetable available for today.
