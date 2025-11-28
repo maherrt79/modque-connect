@@ -10,7 +10,14 @@ export default function EditMosque() {
     const [formData, setFormData] = useState({
         name: '',
         address: '',
-        description: ''
+        description: '',
+        website: '',
+        facebook: '',
+        instagram: '',
+        twitter: '',
+        youtube: '',
+        latitude: '',
+        longitude: ''
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -36,7 +43,14 @@ export default function EditMosque() {
                     setFormData({
                         name: mosqueData.name || '',
                         address: mosqueData.address || '',
-                        description: mosqueData.description || ''
+                        description: mosqueData.description || '',
+                        website: mosqueData.website || '',
+                        facebook: mosqueData.facebook || '',
+                        instagram: mosqueData.instagram || '',
+                        twitter: mosqueData.twitter || '',
+                        youtube: mosqueData.youtube || '',
+                        latitude: mosqueData.location?.latitude || '',
+                        longitude: mosqueData.location?.longitude || ''
                     });
 
                     // Fetch admins
@@ -95,7 +109,19 @@ export default function EditMosque() {
         e.preventDefault();
         setSaving(true);
         try {
-            await updateMosqueProfile(mosqueId, formData);
+            const dataToSave = {
+                ...formData,
+                location: {
+                    latitude: formData.latitude,
+                    longitude: formData.longitude
+                }
+            };
+            // Remove flat lat/lng from root if you prefer, or keep them. 
+            // Ideally we clean up the object before saving to match schema.
+            delete dataToSave.latitude;
+            delete dataToSave.longitude;
+
+            await updateMosqueProfile(mosqueId, dataToSave);
             alert('Profile updated successfully!');
             router.push('/admin/dashboard');
         } catch (error) {
@@ -143,6 +169,94 @@ export default function EditMosque() {
                         value={formData.description}
                         onChange={e => setFormData({ ...formData, description: e.target.value })}
                     />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Website URL</label>
+                    <input
+                        type="url"
+                        className="input"
+                        value={formData.website || ''}
+                        onChange={e => setFormData({ ...formData, website: e.target.value })}
+                        placeholder="https://example.com"
+                    />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem' }}>Social Media</h3>
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Facebook</label>
+                            <input
+                                type="url"
+                                className="input"
+                                value={formData.facebook || ''}
+                                onChange={e => setFormData({ ...formData, facebook: e.target.value })}
+                                placeholder="Facebook Profile URL"
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Instagram</label>
+                            <input
+                                type="url"
+                                className="input"
+                                value={formData.instagram || ''}
+                                onChange={e => setFormData({ ...formData, instagram: e.target.value })}
+                                placeholder="Instagram Profile URL"
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Twitter / X</label>
+                            <input
+                                type="url"
+                                className="input"
+                                value={formData.twitter || ''}
+                                onChange={e => setFormData({ ...formData, twitter: e.target.value })}
+                                placeholder="Twitter Profile URL"
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>YouTube</label>
+                            <input
+                                type="url"
+                                className="input"
+                                value={formData.youtube || ''}
+                                onChange={e => setFormData({ ...formData, youtube: e.target.value })}
+                                placeholder="YouTube Channel URL"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem' }}>Location</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Latitude</label>
+                            <input
+                                type="number"
+                                step="any"
+                                className="input"
+                                value={formData.latitude || ''}
+                                onChange={e => setFormData({ ...formData, latitude: e.target.value })}
+                                placeholder="e.g. 21.4225"
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Longitude</label>
+                            <input
+                                type="number"
+                                step="any"
+                                className="input"
+                                value={formData.longitude || ''}
+                                onChange={e => setFormData({ ...formData, longitude: e.target.value })}
+                                placeholder="e.g. 39.8262"
+                            />
+                        </div>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginTop: '0.5rem' }}>
+                        Used for map display and prayer time calculations.
+                    </p>
                 </div>
 
                 <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={saving}>

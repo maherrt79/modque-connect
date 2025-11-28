@@ -105,10 +105,13 @@ export async function updateMosqueProfile(mosqueId, data) {
 
 // --- Announcement Services ---
 
-export async function createAnnouncement(mosqueId, message) {
+export async function createAnnouncement(mosqueId, { title, content, type = 'general', isPinned = false }) {
     const announcementsRef = collection(db, `mosques/${mosqueId}/announcements`);
     await addDoc(announcementsRef, {
-        message,
+        title,
+        content,
+        type,
+        isPinned,
         createdAt: new Date().toISOString()
     });
 }

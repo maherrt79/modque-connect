@@ -105,9 +105,17 @@ export default function TimetableEditor() {
         <div className="container" style={{ padding: '2rem 1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Timetable Editor</h1>
-                <button onClick={handleSave} disabled={saving} className="btn btn-primary">
-                    {saving ? 'Saving...' : 'Save Changes'}
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button
+                        onClick={() => router.push(`/admin/prayer-calculation?mosqueId=${mosqueId}`)}
+                        className="btn btn-secondary"
+                    >
+                        Calculate Prayer Times
+                    </button>
+                    <button onClick={handleSave} disabled={saving} className="btn btn-primary">
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
             </div>
 
             {/* Jummah Settings */}

@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, doc, setDoc, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, arrayUnion, getDocs, deleteDoc } from 'firebase/firestore';
 import { format, eachDayOfInterval, startOfMonth, endOfMonth } from 'date-fns';
+import { useAuth } from '@/context/AuthContext';
 
 const MOCK_MOSQUES = [
     {
         name: "Manchester Central Mosque",
         address: "20 Upper Park Road, Victoria Park, Manchester, M14 5RU",
         description: "Manchester Central Mosque and Islamic Cultural Centre is a place of worship and a community hub.",
+        website: "https://manchestercentralmosque.org",
+        twitter: "https://twitter.com/MCMVICTORIAPARK",
+        location: { latitude: 53.4556, longitude: -2.2194 },
         adminIds: ["admin_mcm"],
         jummahs: [
             { time: "12:30 PM", language: "English/Arabic" },
@@ -19,6 +23,10 @@ const MOCK_MOSQUES = [
         name: "Didsbury Mosque",
         address: "271 Burton Road, West Didsbury, Manchester, M20 2XG",
         description: "Didsbury Mosque and Islamic Centre serves the diverse Muslim community of South Manchester.",
+        website: "https://didsburymosque.com",
+        facebook: "https://www.facebook.com/DidsburyMosque",
+        instagram: "https://www.instagram.com/didsburymosque",
+        location: { latitude: 53.4228, longitude: -2.2469 },
         adminIds: ["admin_didsbury"],
         jummahs: [
             { time: "1:00 PM", language: "English" },
@@ -30,12 +38,43 @@ const MOCK_MOSQUES = [
         name: "Cheadle Mosque",
         address: "377 Wilmslow Road, Heald Green, Cheadle, SK8 3NP",
         description: "Cheadle Masjid (CMA) is a vibrant community hub offering prayers, education, and social services.",
+        website: "https://cheadlemasjid.org",
+        instagram: "https://www.instagram.com/cheadlemasjid",
+        youtube: "https://www.youtube.com/c/CheadleMasjid",
+        location: { latitude: 53.3607, longitude: -2.2307 },
         adminIds: ["admin_cheadle"],
         jummahs: [
             { time: "12:15 PM", language: "English" },
             { time: "1:15 PM", language: "English" }
         ],
         baseTimes: { fajr: "06:20", sunrise: "07:50", dhuhr: "12:00", asr: "14:15", maghrib: "16:03", isha: "17:33" }
+    },
+    {
+        name: "Salaam Community Centre",
+        address: "42 Raby Street, Moss Side, Manchester, M16 7DJ",
+        description: "Salaam Community Association and Masjid serving the Moss Side community.",
+        website: "http://salaamca.org",
+        location: { latitude: 53.4566, longitude: -2.2335 },
+        adminIds: ["admin_salaam"],
+        jummahs: [
+            { time: "1:00 PM", language: "English" }
+        ],
+        baseTimes: { fajr: "06:10", sunrise: "07:55", dhuhr: "12:05", asr: "13:45", maghrib: "16:05", isha: "17:45" }
+    },
+    {
+        name: "Mawlawi Kurdish Cultural Centre",
+        address: "Parsonage Street, Hulme, Manchester, M15 5WD",
+        description: "Mawlawi Kurdish Cultural Centre (MKCC) serving the Kurdish and wider Muslim community.",
+        website: "http://mkcc-uk.org",
+        facebook: "https://www.facebook.com/MKCC.UK",
+        instagram: "https://www.instagram.com/MKCC.UK",
+        youtube: "https://www.youtube.com/@MKCC-UK",
+        location: { latitude: 53.4668, longitude: -2.2495 },
+        adminIds: ["admin_mkcc"],
+        jummahs: [
+            { time: "12:45 PM", language: "Kurdish/Arabic" }
+        ],
+        baseTimes: { fajr: "06:10", sunrise: "07:55", dhuhr: "12:05", asr: "13:45", maghrib: "16:05", isha: "17:45" }
     }
 ];
 
@@ -77,10 +116,6 @@ function addMinutes(timeStr, minutes) {
     return format(date, 'HH:mm');
 }
 
-import { useAuth } from '@/context/AuthContext';
-
-// ...
-
 export default function SeedData() {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
@@ -91,6 +126,13 @@ export default function SeedData() {
         setStatus('Starting seed...');
 
         try {
+            // 1. Clear existing mosques
+            setStatus('Clearing existing data...');
+            const mosquesSnapshot = await getDocs(collection(db, 'mosques'));
+            const deletePromises = mosquesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+            await Promise.all(deletePromises);
+            setStatus('Existing data cleared.');
+
             const currentMonth = format(new Date(), 'yyyy-MM');
 
             for (const mosque of MOCK_MOSQUES) {
