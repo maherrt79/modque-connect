@@ -136,20 +136,20 @@ export default function TVView() {
             const targetTime = isAfterAdhan ? nextPrayer.iqamahTime : nextPrayer.time;
 
             return (
-                <div style={{ textAlign: 'center', animation: 'fadeIn 0.5s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ textAlign: 'center', animation: 'fadeIn 0.5s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2vmin', width: '100%' }}>
                     {isAfterAdhan ? (
                         <>
                             {/* Top: Prayer Name at Time */}
-                            <div style={{ fontSize: '3rem', color: '#888', marginBottom: '1rem' }}>
+                            <div className="text-fluid-h1" style={{ color: '#888', marginBottom: '1vmin' }}>
                                 {nextPrayer.name} at <span style={{ color: '#fff' }}>{format(nextPrayer.time, 'h:mm a')}</span>
                             </div>
 
                             {/* Middle: Iqamah Countdown */}
                             <div>
-                                <h2 style={{ fontSize: '4rem', marginBottom: '1rem', color: 'var(--emerald-400)' }}>
+                                <h2 className="text-fluid-h2" style={{ marginBottom: '1vmin', color: 'var(--emerald-400)' }}>
                                     Iqamah in
                                 </h2>
-                                <div style={{ fontSize: '8rem', fontWeight: 'bold', fontFamily: 'monospace', color: '#fff' }}>
+                                <div className="text-fluid-huge" style={{ fontWeight: 'bold', fontFamily: 'monospace', color: '#fff', lineHeight: 1 }}>
                                     {getTimeRemaining(targetTime)}
                                 </div>
                             </div>
@@ -158,16 +158,16 @@ export default function TVView() {
                         <>
                             {/* Top: Prayer Name in */}
                             <div>
-                                <h2 style={{ fontSize: '4rem', marginBottom: '1rem', color: 'var(--emerald-400)' }}>
+                                <h2 className="text-fluid-h2" style={{ marginBottom: '1vmin', color: 'var(--emerald-400)' }}>
                                     {nextPrayer.name} in
                                 </h2>
-                                <div style={{ fontSize: '8rem', fontWeight: 'bold', fontFamily: 'monospace', color: '#fff' }}>
+                                <div className="text-fluid-huge" style={{ fontWeight: 'bold', fontFamily: 'monospace', color: '#fff', lineHeight: 1 }}>
                                     {getTimeRemaining(targetTime)}
                                 </div>
                             </div>
 
                             {/* Bottom: Iqamah Time */}
-                            <div style={{ fontSize: '3rem', color: '#888', marginTop: '1rem' }}>
+                            <div className="text-fluid-h1" style={{ color: '#888', marginTop: '2vmin' }}>
                                 Iqamah: <span style={{ color: '#fff' }}>
                                     {nextPrayer.iqamahTime ? format(nextPrayer.iqamahTime, 'h:mm a') : '--:--'}
                                 </span>
@@ -188,28 +188,33 @@ export default function TVView() {
 
             return (
                 <div style={{
-                    padding: '4rem',
-                    border: `8px solid ${borderColor}`,
+                    padding: '4vmin',
+                    border: `1vmin solid ${borderColor}`,
                     borderRadius: '2rem',
                     background: '#111',
                     maxWidth: '90%',
-                    animation: 'fadeIn 0.5s'
+                    width: '90%',
+                    animation: 'fadeIn 0.5s',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center'
                 }}>
                     {announcement.type && (
-                        <div style={{
-                            fontSize: '2rem',
+                        <div className="text-fluid-h2" style={{
                             textTransform: 'uppercase',
                             color: isAlert ? 'var(--red-400)' : 'var(--gold-400)',
-                            marginBottom: '1rem',
+                            marginBottom: '2vmin',
                             fontWeight: 'bold'
                         }}>
                             {announcement.type}
                         </div>
                     )}
-                    <h2 style={{ fontSize: '5rem', marginBottom: '2rem', color: '#fff', lineHeight: 1.2 }}>
+                    <h2 className="text-fluid-h1" style={{ marginBottom: '3vmin', color: '#fff', lineHeight: 1.2 }}>
                         {announcement.title || 'Announcement'}
                     </h2>
-                    <p style={{ fontSize: '3rem', color: '#ccc', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                    <p className="text-fluid-h2" style={{ color: '#ccc', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
                         {announcement.content || announcement.message}
                     </p>
                 </div>
@@ -223,79 +228,103 @@ export default function TVView() {
                 <title>{mosque.name} - TV View</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <style>{`
+                    :root {
+                        --sidebar-width: 30vw;
+                        --sidebar-height: 100vh;
+                        --content-width: 70vw;
+                        --content-height: 100vh;
+                        --bg-sidebar: #111;
+                        --bg-content: radial-gradient(circle at center, #222 0%, #000 100%);
+                    }
+
                     @keyframes fadeIn {
                         from { opacity: 0; transform: scale(0.98); }
                         to { opacity: 1; transform: scale(1); }
                     }
-                    body { margin: 0; cursor: none; }
+                    
+                    body { margin: 0; cursor: none; overflow: hidden; background: #000; }
 
-                    /* Default Landscape Layout */
                     .tv-container {
                         display: flex;
                         flex-direction: row;
-                        background: #000;
-                        min-height: 100vh;
+                        width: 100vw;
+                        height: 100vh;
                         color: #fff;
-                        font-family: system-ui, sans-serif;
+                        font-family: system-ui, -apple-system, sans-serif;
                         overflow: hidden;
                     }
+
                     .tv-sidebar {
-                        width: 35%;
-                        background: #111;
+                        width: var(--sidebar-width);
+                        height: var(--sidebar-height);
+                        background: var(--bg-sidebar);
                         border-right: 1px solid #333;
-                        padding: 2rem;
                         display: flex;
                         flex-direction: column;
-                        height: 100vh;
+                        padding: 2vmin;
                         overflow-y: auto;
+                        scrollbar-width: none;
+                        -ms-overflow-style: none;
+                        transition: all 0.3s ease;
                     }
+                    
+                    .tv-sidebar::-webkit-scrollbar { display: none; }
+
                     .tv-content {
+                        width: var(--content-width);
+                        height: var(--content-height);
                         flex: 1;
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         position: relative;
-                        background: radial-gradient(circle at center, #222 0%, #000 100%);
-                        height: 100vh;
+                        background: var(--bg-content);
                     }
 
-                    /* Portrait Layout - Trigger on actual portrait screens OR screens narrower than 1280px */
-                    @media (orientation: portrait), (max-width: 1280px) {
-                        .tv-container {
-                            flex-direction: column; /* Sidebar on top, Content on bottom */
+                    /* Responsive Text Utilities */
+                    .text-fluid-h1 { font-size: clamp(1.5rem, 4vmin, 3rem); }
+                    .text-fluid-h2 { font-size: clamp(1.2rem, 3vmin, 2.5rem); }
+                    .text-fluid-body { font-size: clamp(0.8rem, 2vmin, 1.5rem); }
+                    .text-fluid-huge { font-size: clamp(4rem, 15vmin, 20rem); }
+                    .text-fluid-clock { font-size: clamp(2rem, 6vmin, 5rem); }
+
+                    /* Portrait Layout */
+                    @media (orientation: portrait) {
+                        :root {
+                            --sidebar-width: 100vw;
+                            --sidebar-height: 45vh; /* Slightly less than half for prayer list */
+                            --content-width: 100vw;
+                            --content-height: 55vh;
                         }
+                        
+                        .tv-container { flex-direction: column; }
+                        
                         .tv-sidebar {
-                            width: 100%;
-                            height: 50vh; /* Half screen for prayer list */
                             border-right: none;
-                            border-top: 1px solid #333;
-                            padding: 1rem;
+                            border-bottom: 1px solid #333;
+                            order: 2; /* Sidebar at bottom in portrait? Or top? User asked for "best experience". Usually top is better for list, bottom for main content? Let's stick to top for now as per previous, or maybe bottom is better for "TV" feel? Let's keep sidebar on TOP as per previous iteration. */
+                            order: 1; 
                         }
+                        
                         .tv-content {
-                            width: 100%;
-                            height: 50vh; /* Half screen for countdown */
+                            order: 2;
                         }
-                        /* Adjust font sizes for portrait */
-                        .tv-sidebar h1 { font-size: 1.5rem !important; margin-bottom: 0.25rem !important; }
-                        .tv-sidebar .map-pin { font-size: 1rem !important; }
-                        .tv-sidebar .prayer-row { padding: 0.75rem 1rem !important; }
-                        .tv-sidebar .prayer-name, .tv-sidebar .prayer-time { font-size: 1.2rem !important; }
                     }
                 `}</style>
             </Head>
 
             {/* Sidebar - Prayer Times */}
             <div className="tv-sidebar">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--emerald-500)', marginBottom: '0.5rem' }}>{mosque.name}</h1>
-                    <div className="map-pin" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#888', fontSize: '1.2rem' }}>
-                        <MapPin size={24} /> {mosque.address}
+                <div style={{ marginBottom: '2vmin' }}>
+                    <h1 className="text-fluid-h1" style={{ fontWeight: 'bold', color: 'var(--emerald-500)', marginBottom: '0.5vmin', lineHeight: 1.2 }}>{mosque.name}</h1>
+                    <div className="text-fluid-body" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#888' }}>
+                        <MapPin size={18} style={{ minWidth: '18px' }} /> <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{mosque.address}</span>
                     </div>
                 </div>
 
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5vmin' }}>
                     {/* Header Row */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', columnGap: '1rem', padding: '0 1.5rem', marginBottom: '0.5rem', color: '#666', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    <div className="text-fluid-body" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', columnGap: '1rem', padding: '0 1.5vmin', marginBottom: '0.5vmin', color: '#666', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.8rem' }}>
                         <div>Prayer</div>
                         <div style={{ textAlign: 'center' }}>Adhan</div>
                         <div style={{ textAlign: 'right' }}>Iqamah</div>
@@ -313,27 +342,27 @@ export default function TVView() {
                                 gridTemplateColumns: '1.4fr 1fr 1fr',
                                 columnGap: '1rem',
                                 alignItems: 'center',
-                                padding: '1.25rem 1.5rem',
+                                padding: '1vmin 1.5vmin',
                                 background: isNext ? 'var(--emerald-900)' : '#222',
                                 borderRadius: '1rem',
                                 border: isNext ? '2px solid var(--emerald-500)' : '1px solid transparent',
                                 opacity: isNext ? 1 : 0.7
                             }}>
-                                <span className="prayer-name" style={{ fontSize: '1.5rem', fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : '#eee' }}>{prayer}</span>
+                                <span className="text-fluid-h2" style={{ fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : '#eee' }}>{prayer}</span>
 
                                 <div style={{ textAlign: 'center' }}>
-                                    <span className="prayer-time" style={{ fontSize: '1.5rem', fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : 'var(--gold-400)' }}>
+                                    <span className="text-fluid-h2" style={{ fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : 'var(--gold-400)' }}>
                                         {time}
                                     </span>
                                 </div>
 
                                 <div style={{ textAlign: 'right' }}>
                                     {iqama ? (
-                                        <span className="prayer-time" style={{ fontSize: '1.5rem', fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : '#ccc' }}>
+                                        <span className="text-fluid-h2" style={{ fontWeight: isNext ? 'bold' : 'normal', color: isNext ? '#fff' : '#ccc' }}>
                                             {iqama}
                                         </span>
                                     ) : (
-                                        <span className="prayer-time" style={{ fontSize: '1.5rem', color: '#444' }}>--:--</span>
+                                        <span className="text-fluid-h2" style={{ color: '#444' }}>--:--</span>
                                     )}
                                 </div>
                             </div>
@@ -341,11 +370,11 @@ export default function TVView() {
                     })}
                 </div>
 
-                <div style={{ marginTop: 'auto', textAlign: 'center', padding: '1rem', background: '#222', borderRadius: '1rem' }}>
-                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
-                        {format(currentTime, 'h:mm')} <span style={{ fontSize: '1.5rem', color: '#888' }}>{format(currentTime, 'a')}</span>
+                <div style={{ marginTop: 'auto', textAlign: 'center', padding: '1vmin', background: '#222', borderRadius: '1rem' }}>
+                    <div className="text-fluid-clock" style={{ fontWeight: 'bold', lineHeight: 1 }}>
+                        {format(currentTime, 'h:mm')} <span style={{ fontSize: '0.5em', color: '#888' }}>{format(currentTime, 'a')}</span>
                     </div>
-                    <div style={{ fontSize: '1rem', color: '#888', marginTop: '0.25rem' }}>
+                    <div className="text-fluid-body" style={{ color: '#888', marginTop: '0.25rem' }}>
                         {format(currentTime, 'EEEE, MMMM d, yyyy')}
                     </div>
                 </div>

@@ -84,15 +84,7 @@ export default function Home() {
                     </div>
                 </section>
 
-                {user && (
-                    <section>
-                        <div style={{ marginTop: '2rem', padding: '2rem', background: 'var(--muted)', borderRadius: 'var(--radius)' }}>
-                            <h3>Mosque Admin</h3>
-                            <p style={{ marginBottom: '1rem' }}>Manage your mosques and prayer times.</p>
-                            <Link href="/admin/dashboard" className="btn btn-primary">Go to Admin Dashboard</Link>
-                        </div>
-                    </section>
-                )}
+
             </main>
         </div>
     );

@@ -217,26 +217,6 @@ export default function MosqueProfile() {
                                 <div style={{ padding: '1.5rem' }}>
                                     {/* Primary Actions */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-                                        {isAdmin && (
-                                            <button
-                                                onClick={() => router.push(`/admin/dashboard?mosqueId=${id}`)}
-                                                className="btn"
-                                                style={{
-                                                    width: '100%',
-                                                    background: 'var(--emerald-50)',
-                                                    color: 'var(--emerald-800)',
-                                                    border: '1px solid var(--emerald-200)',
-                                                    borderRadius: '10px',
-                                                    padding: '0.875rem',
-                                                    fontWeight: '600',
-                                                    fontSize: '0.95rem',
-                                                    marginBottom: '0.5rem'
-                                                }}
-                                            >
-                                                <Settings size={18} style={{ marginRight: '0.5rem' }} /> Manage Mosque
-                                            </button>
-                                        )}
-
                                         <div style={{ display: 'flex', gap: '0.75rem' }}>
                                             {isFollowing ? (
                                                 <button
